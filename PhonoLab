@@ -1,0 +1,225 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECCIÓN PRÁCTICA - PhonoLab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f0f8ff;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Lexend', sans-serif;
+            font-weight: bold;
+            font-style: italic;
+            color: #4CAF50;
+        }
+        h2 {
+            color: #4CAF50;
+        }
+        .exercise {
+            background-color: #ffeb3b;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+            display: inline-block;
+        }
+        .feedback {
+            color: green;
+            font-size: 20px;
+            display: none;
+        }
+        .error {
+            color: red;
+            font-size: 20px;
+            display: none;
+        }
+        .happy-face {
+            color: green;
+            font-size: 40px;
+            display: none;
+        }
+        .sad-face {
+            color: red;
+            font-size: 40px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>SECCIÓN PRÁCTICA</h1>
+
+    <div id="level1" class="level">
+        <h2>NEWBIE NIVEL 1</h2>
+        <!-- Ejercicios Nivel 1 aquí -->
+        <div class="exercise">
+            <p>EJERCICIO 1: pain /pein/</p>
+            <button onclick="startRecording(1)">Grabar</button>
+            <div class="feedback" id="feedback1"></div>
+            <div class="happy-face" id="happyFace1">😊</div>
+            <div class="sad-face" id="sadFace1">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 2: house /haʊs/</p>
+            <button onclick="startRecording(2)">Grabar</button>
+            <div class="feedback" id="feedback2"></div>
+            <div class="happy-face" id="happyFace2">😊</div>
+            <div class="sad-face" id="sadFace2">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 3: mom /mɒm/</p>
+            <button onclick="startRecording(3)">Grabar</button>
+            <div class="feedback" id="feedback3"></div>
+            <div class="happy-face" id="happyFace3">😊</div>
+            <div class="sad-face" id="sadFace3">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 4: rainbow /ˈreɪn.bəʊ/</p>
+            <button onclick="startRecording(4)">Grabar</button>
+            <div class="feedback" id="feedback4"></div>
+            <div class="happy-face" id="happyFace4">😊</div>
+            <div class="sad-face" id="sadFace4">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 5: mouse /maʊs/</p>
+            <button onclick="startRecording(5)">Grabar</button>
+            <div class="feedback" id="feedback5"></div>
+            <div class="happy-face" id="happyFace5">😊</div>
+            <div class="sad-face" id="sadFace5">😢</div>
+        </div>
+    </div>
+
+    <div id="level2" class="level" style="display: none;">
+        <h2>LEARNER NIVEL 2</h2>
+        <div class="exercise">
+            <p>EJERCICIO 1: I like dogs.</p>
+            <button onclick="startRecording(6)">Grabar</button>
+            <div class="feedback" id="feedback6"></div>
+            <div class="happy-face" id="happyFace6">😊</div>
+            <div class="sad-face" id="sadFace6">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 2: It is hot today.</p>
+            <button onclick="startRecording(7)">Grabar</button>
+            <div class="feedback" id="feedback7"></div>
+            <div class="happy-face" id="happyFace7">😊</div>
+            <div class="sad-face" id="sadFace7">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 3: She is my friend.</p>
+            <button onclick="startRecording(8)">Grabar</button>
+            <div class="feedback" id="feedback8"></div>
+            <div class="happy-face" id="happyFace8">😊</div>
+            <div class="sad-face" id="sadFace8">😢</div>
+        </div>
+        <div class="exercise">
+            <p>EJERCICIO 4: This is fun!</p>
+            <button onclick="startRecording(9)">Grabar</button>
+            <div class="feedback" id="feedback9"></div>
+            <div class="happy-face" id="happyFace9">😊</div>
+            <div class="sad-face" id="sadFace9">😢</div>
+        </div>
+    </div>
+
+    <script>
+        let points = 0;
+        let currentLevel = 1;
+        let correctCountLevel1 = 0;
+        let correctCountLevel2 = 0;
+
+        const exercisesLevel1 = [
+            { text: "pain /pein/", correctAnswer: "pain" },
+            { text: "house /haʊs/", correctAnswer: "house" },
+            { text: "mom /mɒm/", correctAnswer: "mom" },
+            { text: "rainbow /ˈreɪn.bəʊ/", correctAnswer: "rainbow" },
+            { text: "mouse /maʊs/", correctAnswer: "mouse" },
+        ];
+
+        const exercisesLevel2 = [
+            { text: "I like dogs.", correctAnswer: "i like dogs" },
+            { text: "It is hot today.", correctAnswer: "it is hot today" },
+            { text: "She is my friend.", correctAnswer: "she is my friend" },
+            { text: "This is fun!", correctAnswer: "this is fun" },
+        ];
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+
+        function startRecording(exerciseIndex) {
+            recognition.start();
+            recognition.onresult = function(event) {
+                const spokenWord = event.results[0][0].transcript.toLowerCase();
+                let feedbackId, happyFaceId, sadFaceId;
+
+                if (currentLevel === 1) {
+                    feedbackId = `feedback${exerciseIndex}`;
+                    happyFaceId = `happyFace${exerciseIndex}`;
+                    sadFaceId = `sadFace${exerciseIndex}`;
+                    checkAnswer(exerciseIndex - 1, spokenWord, feedbackId, happyFaceId, sadFaceId, exercisesLevel1);
+                } else {
+                    feedbackId = `feedback${exerciseIndex + 5}`;
+                    happyFaceId = `happyFace${exerciseIndex + 5}`;
+                    sadFaceId = `sadFace${exerciseIndex + 5}`;
+                    checkAnswer(exerciseIndex - 1, spokenWord, feedbackId, happyFaceId, sadFaceId, exercisesLevel2);
+                }
+            };
+            recognition.onerror = function(event) {
+                console.error("Error occurred in recognition: " + event.error);
+            };
+        }
+
+        function checkAnswer(exerciseIndex, spokenWord, feedbackId, happyFaceId, sadFaceId, exercises) {
+            const correctAnswer = exercises[exerciseIndex].correctAnswer;
+
+            // Permitir coincidencias más flexibles
+            const isCorrect = spokenWord.includes(correctAnswer);
+
+            document.getElementById(feedbackId).style.display = "block";
+            if (isCorrect) {
+                points += 20;
+                currentLevel === 1 ? correctCountLevel1++ : correctCountLevel2++;
+                document.getElementById(feedbackId).innerHTML = "Excellent job! You sound like a native speaker!";
+                document.getElementById(happyFaceId).style.display = "inline";
+                document.getElementById(sadFaceId).style.display = "none";
+
+                // Simulación de lluvia de caritas felices
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => { document.body.innerHTML += "😊"; }, i * 200);
+                }
+
+                if (currentLevel === 1 && correctCountLevel1 === exercisesLevel1.length) {
+                    unlockLevel2();
+                } else if (currentLevel === 2 && correctCountLevel2 === exercisesLevel2.length) {
+                    unlockLevel3();
+                }
+            } else {
+                document.getElementById(feedbackId).innerHTML = "A stumble is not a fall. You CAN do it";
+                document.getElementById(sadFaceId).style.display = "inline";
+                document.getElementById(happyFaceId).style.display = "none";
+
+                // Simulación de lluvia de "x"
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => { document.body.innerHTML += "❌"; }, i * 200);
+                }
+            }
+        }
+
+        function unlockLevel2() {
+            document.getElementById("level2").style.display = "block";
+            currentLevel = 2;
+            alert("¡Felicidades! ¡Has desbloqueado el NIVEL 2!");
+        }
+
+        function unlockLevel3() {
+            alert("¡Felicidades! ¡Has desbloqueado el NIVEL 3!");
+            // Aquí puedes agregar la lógica para el NIVEL 3.
+        }
+    </script>
+</body>
+</html>
+
